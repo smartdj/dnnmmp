@@ -26,7 +26,8 @@
 9. rabbitmq ： 队列服务
 10. PhpMyAdmin ：mysql管理工具
 11. PhpRedisAdmin： redis管理工具
-
+12. Elasticsearch：全文搜索引擎
+13. Elasticsearch-head：elasticsearch管理工具
 ## 特性
 >1.使用对象：**前端**，**服务端**，**运维**
 
