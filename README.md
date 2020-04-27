@@ -1,7 +1,11 @@
+# 这个仓库在原仓库的基础上增加了elasticsearch,elasticsearch-head
+
 # 基于docker的开发者集成环境
 [官方文档](http://blog.kaka996.com/)
 
 最近更新：
+
+2020-04-27 新增 elasticsearch、elasticsearch-head
 
 2019-08-31 redis管理工具PhpRedisAdmin
 
