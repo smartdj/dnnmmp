@@ -53,7 +53,7 @@
 - [程序员常用网站](http://www.kaka996.com/web/dh/dev)
 
 ## elasticsearch、elasticsearch-head参考
-[把 elasticsearch 又换回了单节点(https://akawa.ink/2019/11/09/change-es-to-single-node)]
-[使用docker-compose构建elasticsearch集群(https://juejin.im/post/5ba4c8976fb9a05cec4da9f5)]
-[docker-compose搭建es集群(https://www.jianshu.com/p/dace6c3558a2)]
-[Elasticsearch安装elasticsearch-head（docker方式）(https://www.jianshu.com/p/65bd6942bdd)]
+>[把 elasticsearch 又换回了单节点(https://akawa.ink/2019/11/09/change-es-to-single-node)]
+>[使用docker-compose构建elasticsearch集群(https://juejin.im/post/5ba4c8976fb9a05cec4da9f5)]
+>[docker-compose搭建es集群(https://www.jianshu.com/p/dace6c3558a2)]
+>[Elasticsearch安装elasticsearch-head（docker方式）(https://www.jianshu.com/p/65bd6942bdd)]
