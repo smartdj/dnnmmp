@@ -11,6 +11,60 @@ services:
       TZ: "$TZ"  
     networks:
       - default
+
+  es:
+    image: 'elasticsearch:${ELASTICSEARCH_VERSION}'
+    # docker启动后的名称
+    container_name: es01
+    privileged: true
+    # 出现异常自动重启
+    # restart: always
+    ports:
+      # http协议连接es使用的端口
+      - ${ELASTICSEARCH_HTTP_PORT}:9200
+      # tcp客户端连接使用的端口
+      - ${ELASTICSEARCH_TCP_PORT}:9300
+    environment:
+      - node.name=es01
+      - cluster.initial_master_nodes=es01
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ELASTIC_PASSWORD=123456
+      - network.host=0.0.0.0
+      # 加入跨域配置
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      # - xpack.security.enabled=true
+      # - xpack.security.transport.ssl.enabled=true
+      # - xpack.security.transport.ssl.verification_mode=certificate
+      # - xpack.security.transport.ssl.keystore.path=certs/elastic-certificates.p12
+      # - xpack.security.transport.ssl.truststore.path=certs/elastic-certificates.p12
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - ${ES01_APP_DATA}:/usr/share/elasticsearch/data
+      - ${ES01_CONFIG_CERTS}:/usr/share/elasticsearch/config/certs
+      - ${ES01_LOG_DIR}:/usr/loshareg/elasticsearch/log
+    networks:
+      - default
+    # restart: always
+  es-head:
+    image: mobz/elasticsearch-head:5
+    container_name: es-head
+    volumes:
+      - ${GRUNTFILE_JS_FILE_PATH}:/usr/src/app/Gruntfile.js
+      - ${APP_JS_FILE_PATH}:/usr/src/app/_site/app.js
+    ports:
+      - "9100:9100"
+    links:
+      - es:elasticsearch
+
   node:
     image: node:${NODE_VERSION}
     volumes:
@@ -270,7 +324,7 @@ services:
     restart: always
     depends_on:
       - mysql
-      
+  
 networks:
   default:
 
