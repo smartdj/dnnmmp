@@ -3,3 +3,7 @@
 www/*
 !www/localhost/
 !www/gowork/
+data/es01/nodes
+data/mysql-master
+data/mysql-slave
+data/nacos/logs

@@ -48,12 +48,14 @@ services:
         soft: 65536
         hard: 65536
     volumes:
+      - ${ES01_PLUGINS}:/usr/share/elasticsearch/plugins
       - ${ES01_APP_DATA}:/usr/share/elasticsearch/data
       - ${ES01_CONFIG_CERTS}:/usr/share/elasticsearch/config/certs
       - ${ES01_LOG_DIR}:/usr/loshareg/elasticsearch/log
     networks:
       - default
     # restart: always
+    
   es-head:
     image: mobz/elasticsearch-head:5
     container_name: es-head
@@ -65,6 +67,68 @@ services:
     links:
       - es:elasticsearch
 
+  kibana:
+    image: 'kibana:${ELASTICSEARCH_VERSION}'
+    container_name: kibana
+    links:
+      - es:elasticsearch
+
+  nacos:
+    image: 'nacos/nacos-server:latest'
+    container_name: nacos-standalone-mysql
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_MASTER_SERVICE_HOST=mysql-master
+      - MYSQL_MASTER_SERVICE_DB_NAME=nacos_devtest
+      - MYSQL_MASTER_SERVICE_PORT=3305
+      - MYSQL_SLAVE_SERVICE_HOST=mysql-slave
+      - MYSQL_SLAVE_SERVICE_PORT=3304
+      - MYSQL_MASTER_SERVICE_USER=nacos
+      - MYSQL_MASTER_SERVICE_PASSWORD=nacos
+    volumes:
+      - ${NACOS_STANDALONE_LOGS}:/home/nacos/logs
+      - ${NACOS_CUSTOM_PROPERTIES}:/home/nacos/init.d/custom.properties
+    ports:
+      - "8848:8848"
+      - "9555:9555"
+    depends_on:
+      - mysql-slave
+    restart: on-failure
+  mysql-master:
+    container_name: mysql-master
+    image: nacos/nacos-mysql-master:latest
+    env_file:
+      - ./nacos/env/mysql-common.env
+      - ./nacos/env/mysql-master.env
+    volumes:
+      - ./data/mysql-master:/var/lib/mysql
+    ports:
+      - "3305:3306"
+  mysql-slave:
+    container_name: mysql-slave
+    image: nacos/nacos-mysql-slave:latest
+    env_file:
+      - ./nacos/env/mysql-common.env
+      - ./nacos/env/mysql-slave.env
+    volumes:
+      - ./data/mysql-slave:/var/lib/mysql
+    ports:
+      - "3304:3306"
+    depends_on:
+      - mysql-master
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./nacos/prometheus/prometheus-standalone.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - nacos
+    restart: on-failure
+    
   node:
     image: node:${NODE_VERSION}
     volumes:
